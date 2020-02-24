@@ -154,7 +154,7 @@ configuration:
 
     custom_exe_match_templates:
         type: dict
-        default_value: {}
+        default_value: { linux2: [], win32: [], darwin: [] }
         description: "Adds additional match templates for nuke executable search. If your
                       studio has a custom install location for nuke you can define those
                       locations here."
