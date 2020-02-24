@@ -40,7 +40,7 @@ class NukeLauncher(SoftwareLauncher):
     NUKE_7_8_PRODUCTS = [
         "Nuke",
         "NukeX",
-        "NukeAssist",
+        "NukeAssist"
     ]
 
     # Templates for all the display names of the products supported by Nuke 9 and onward.
@@ -49,6 +49,7 @@ class NukeLauncher(SoftwareLauncher):
         "NukeAssist",
         "NukeStudio",
         "NukeX",
+        "Hiero"
     ]
 
     # This dictionary defines a list of executable template strings for each
@@ -129,7 +130,11 @@ class NukeLauncher(SoftwareLauncher):
         :returns: Generator of :class:`SoftwareVersion`.
         """
         # Certain platforms have more than one location for installed software
-        for template in self.EXECUTABLE_MATCH_TEMPLATES[sys.platform]:
+        match_templates = self.EXECUTABLE_MATCH_TEMPLATES[sys.platform]
+        custom_templates = self.get_setting("custom_exe_match_templates")[sys.platform]
+        match_templates.extend(custom_templates)
+
+        for template in match_templates:
             self.logger.debug("Processing template %s.", template)
             # Extract all products from that executable.
             for executable, tokens in self._glob_and_match(template, self.COMPONENT_REGEX_LOOKUP):
@@ -332,7 +337,7 @@ class NukeLauncher(SoftwareLauncher):
         :return: str of the joined environment paths
         """
         # get any existing nuke path to custom gizmos, scripts etc.
-        existing_path_str = os.environ.get(env_key,"")
+        existing_path_str = os.environ.get(env_key, "")
         existing_path_list = existing_path_str.split(os.pathsep)
 
         # append the toolkit extensions in order to ensure the right integrations execute
